@@ -15,7 +15,6 @@ const initializepassport = () => {
                 let newUser
                 let user = await User.findOne({ email: username });
                 if (user){
-                    console.log ("el usuario ya existe")
                     return done(null, false)
                 }
                 let cart = await Cart.create({})
@@ -52,6 +51,7 @@ const initializepassport = () => {
             const user = await User.findOne({email: username});
             if (!user){
                 console.log("Usuario no encontrado")
+
                 return done(null, false)
             }
             if (!isValidPassword(user, password)){
@@ -70,6 +70,7 @@ const initializepassport = () => {
         callbackURL: "http://localhost:8080/api/session/githubcallback"
     }, async (accessToken, refreshToken, profile, done) => {
         try{
+            
             console.log(profile)
             let user = await User.findOne({email:profile._json.email});
             if (!user){

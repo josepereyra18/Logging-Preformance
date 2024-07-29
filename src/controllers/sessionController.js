@@ -3,7 +3,9 @@ export const register = async (req, res) => {
 }
 
 export const failregister = async (req, res) => {
-    console.log("Usuario ya registrado");
+    req.logger.info("Usuario ya registrado");
+    req.logger.debug("Usuario ya registrado");
+    // console.log("Usuario ya registrado");
     res.send({error:"upsi dupsy, usuario ya registrado"})
 }
 
@@ -17,15 +19,20 @@ export const login = async (req, res) => {
                 age: req.user.age,
                 cartId: req.user.cartId
                };
-               console.log(req.session.user);
+               req.logger.info("Usuario logueado");
+               req.logger.debug("Usuario logueado");
+            //    console.log(req.session.user);
             res.redirect('/current')
         } catch(error) {
+            req.logger.error(error);
             res.status(500).send({message: "Error al buscar el usuario"});
         }
 }
 
 export const faillogin = async (req, res) => {
-    console.log("Usuario no encontrado");
+    req.logger.info("Usuario no encontrado");
+    req.logger.debug("Usuario no encontrado");
+    // console.log("Usuario no encontrado");
     res.send({error: "Usuario no encontrado"});
 }
 

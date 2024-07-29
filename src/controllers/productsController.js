@@ -13,7 +13,8 @@ export const getProducts = async (req, res) =>{
         let productos = await productsService.getProducts();
         res.send({result: "success", payload: productos});
     } catch (error){
-        console.log(error);
+        req.logger.error(error);
+        // console.log(error);
     }
 }
 
@@ -31,7 +32,8 @@ export const getProductById = async (req, res) =>{
         let producto = await productsService.getProductById(id);
         res.send({result: "success", payload: producto});
     } catch (error){
-        console.log(error.cause);
+        // console.log(error.cause);
+        req.logger.error(error.cause);
         res.send({status: "error",error: error.message});
     }
 }
@@ -63,7 +65,7 @@ export const createProduct = async (req, res) =>{
         res.send({ result: "success", payload: result });
 
     }catch(error){
-        console.log(error.cause);
+        req.logger.error(error.cause);
         res.send({status: "error",error: error.message});
     }
 }
@@ -103,7 +105,8 @@ export const updateProduct = async (req, res) =>{
         let result = await productsService.updateProduct(id, prductModified);
         res.send({result: "success", payload: result});
     }catch(error){
-        console.log(error);
+        // console.log(error);
+        req.logger.error(error.cause);
         res.send({status: "error",error: error.message});
     }
 

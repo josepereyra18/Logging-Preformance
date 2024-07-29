@@ -19,7 +19,7 @@ import session from 'express-session';
 import passport from 'passport';
 import initializepassport from './middlewares/passport.config.js';
 import sharedSession from 'express-socket.io-session';
-
+import { addLogger } from './utils/logger/logger.js'
 
 
 const app = express();
@@ -35,6 +35,7 @@ const sessionMiddleware = session(
     store: MongoStore.create({ mongoUrl: process.env.MONGO_URL})
 })
 
+app.use(sessionMiddleware)
 
 socketServer.use(sharedSession(sessionMiddleware, {
     autoSave: true
@@ -49,17 +50,19 @@ mongoose.connect(process.env.MONGO_URL).then(
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+
+
 app.use(handleError);
 
 app.engine('handlebars', handlebars.engine({
   handlebars: allowInsecurePrototypeAccess(Handlebars)
 }));
 
-app.use(sessionMiddleware)
+
 initializepassport();
 app.use(passport.initialize());
 app.use(passport.session());
-
+app.use(addLogger);
 
 app.set('views', __dirname + '/views');
 app.set('view engine', 'handlebars');
@@ -68,6 +71,17 @@ app.use('/api', productsRouter);
 app.use('/api', cartRouter);
 app.use('/api/session', sessionRouter);
 app.use('/', viewsRouter);
+
+app.get('/loggerTest', (req, res) => {
+    req.logger.fatal('Fatal message');
+    req.logger.error('Error message');
+    req.logger.warning('Warning message');
+    req.logger.info('Info message');
+    req.logger.http('HTTP message');
+    req.logger.debug('Debug message');
+    
+    res.send({message: "Logger test"});
+});
 
 
 

@@ -14,7 +14,8 @@ export const getCarts =async (req,res) =>{
         let carts = await cartService.getCarts()
         res.send({result: "success", payload: carts});
     } catch (error){
-        console.log(error);
+        req.logger.error(error);
+        
     }
 }
 
@@ -22,7 +23,7 @@ export const getCarts =async (req,res) =>{
 export const getCartbyId =async (req, res) =>{
     const cartId = req.params.cid;
     try {
-        if (!isNaN(id)){
+        if (!isNaN(cartId)){
             CustomError.createError({
                 name: "Param incorrecto",
                 cause: routingType(id),
@@ -39,10 +40,12 @@ export const getCartbyId =async (req, res) =>{
                 code: EErrors.DATABASE_ERROR
             });
         }
-        console.log(JSON.stringify(cart, null, '\t'))
+        req.logger.info(JSON.stringify(cart, null, '\t'));
+        req.logger.debug(JSON.stringify(cart, null, '\t'));
         res.send({result: "success", payload: cart});
     } catch (error) {
-        console.log(error.cause);
+        // console.log(error.cause);
+        req.logger.error(error.cause);
         res.send({status: "error",error: error.message});
     }
 }
@@ -95,7 +98,8 @@ export const addProductToCart = async (req,res) =>{
         let prodAgregado = await cartService.updateCart(id, carrito);
         res.send({result: "success", payload: prodAgregado});
     }catch(error){
-        console.log(error.cause);
+        // console.log(error.cause);
+        req.logger.error(error.cause);
         res.send({status: "error",error: error.message});
     }
 }
@@ -106,7 +110,7 @@ export const updateCart = async (req, res)=>{
     let { cid } = req.params;
 
     try{
-        if (!isNaN(id)){
+        if (!isNaN(cid)){
             CustomError.createError({
                 name: "Param incorrecto",
                 cause: routingType(id),
@@ -129,7 +133,8 @@ export const updateCart = async (req, res)=>{
         let cartUpdated = await cartService.updateCart(cid, cart); //update cart
         res.send({result: "success", payload: cartUpdated});
     }catch(error){
-        console.log(error.cause);
+        // console.log(error.cause);
+        req.logger.error(error.cause);
         res.send({status: "error",error: error.message});
     }    
 }
@@ -141,7 +146,7 @@ export const updateProductFromCart = async (req, res) =>{
 
     try {
 
-        if (!isNaN(id) || !isNaN(pid)){
+        if (!isNaN(cid) || !isNaN(pid)){
             CustomError.createError({
                 name: "Param  incorrecto",
                 cause: routingType(id),
@@ -174,7 +179,8 @@ export const updateProductFromCart = async (req, res) =>{
 
         res.send({ result: "success", payload: cartUpdated });
     } catch (error) {
-        console.log(error.cause);
+        
+        req.logger.error(error.cause);
         res.send({status: "error",error: error.message});
     }
 }
@@ -224,7 +230,8 @@ export const deleteProductFromCart = async (req, res) =>{
         
         res.send({result: "success", payload: prodAgregado});
     }catch(error){
-        console.log(error.cause);
+        // console.log(error.cause);
+        req.logger.error(error.cause);
         res.send({status: "error",error: error.message});
     }
 }
@@ -257,7 +264,8 @@ export const deleteAllProductsFromCart = async (req, res) =>{
 
         res.send({result: "success", payload: prodEliminado});
     }catch(error){
-        console.log(error.cause);
+        // console.log(error.cause);
+        req.logger.error(error.cause);
         res.send({status: "error",error: error.message});
     }
 }
